@@ -49,8 +49,43 @@ class ModelTraier:
                 "XGBoost": XGBRegressor(),
                 "Linear Regression": LinearRegression(),
             }
+             
+            params = {
+                "Random Forest": {
+                    'n_estimators': [100, 200],
+                    'max_depth': [None, 10, 20],
+                    'min_samples_split': [2, 5],
+                    'min_samples_leaf': [1, 2],
+                },
+                "Gradient Boosting": {
+                    'n_estimators': [100, 200],
+                    'learning_rate': [0.01, 0.1],
+                    'max_depth': [3, 5],
+                },
+                "AdaBoost": {
+                    'n_estimators': [50, 100],
+                    'learning_rate': [0.01, 0.1],
+                },
+                "Decision Tree": {
+                    'max_depth': [None, 10, 20],
+                    'min_samples_split': [2, 5],
+                    'min_samples_leaf': [1, 2],
+                },
+                "K-Nearest Neighbors": {
+                    'n_neighbors': [3, 5, 7],
+                    'weights': ['uniform', 'distance'],
+                },
+                "XGBoost": {
+                    'n_estimators': [100, 200],
+                    'learning_rate': [0.01, 0.1],
+                    'max_depth': [3, 5],
+                },
+                "Linear Regression": {
+                    # Linear Regression has no hyperparameters to tune
+                },
 
-            model_report: dict = evaluate_models(X_train, y_train, X_test, y_test, models)
+             }
+            model_report: dict = evaluate_models(X_train, y_train, X_test, y_test, models, params=params)
             ## To get best model score from dict
             best_model_score = max(sorted(model_report.values()))
             ## To get best model name from dict
@@ -59,6 +94,7 @@ class ModelTraier:
             ]
 
             best_model = models[best_model_name]
+            best_model.fit(X_train, y_train)
 
             if best_model_score < 0.6:
                 raise CustomException(
