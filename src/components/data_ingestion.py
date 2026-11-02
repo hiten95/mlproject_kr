@@ -4,7 +4,7 @@ from src.exception import CustomException
 from src.logger import logging
 import pandas as pd
 from src.components.data_transformation import DataTransformation
-from src.components.data_transformation import DataTransformationConfig
+from src.components.model_trainer import ModelTraier
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
 @dataclass      
@@ -40,8 +40,12 @@ if __name__ == "__main__":
     df = pd.read_csv('notebook/data/stud.csv')
     train_data,test_path = obj.initiate_data_ingestion(df)
     data_transformation = DataTransformation()
-    data_transformation.initiate_data_transformation(train_data,test_path)
-
-
-
-
+    train_arr,test_arr,preprocessor_path = data_transformation.initiate_data_transformation(train_data,test_path)
+    modeltrainer = ModelTraier()
+    r2_score = modeltrainer.initiate_model_trainer(
+        train_arr,
+        test_arr,
+        preprocessor_path,
+    )
+    print(f"Model R2 score: {r2_score:.4f}")
+    
